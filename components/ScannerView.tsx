@@ -42,7 +42,7 @@ const ScannerView: React.FC<ScannerViewProps> = ({ onCapture, onFinished, state,
             videoRef.current.srcObject = stream;
           }
         } catch (err) {
-          console.error("Camera access denied", err);
+          // Camera access denied or not available
         }
       }
     }

@@ -25,7 +25,7 @@ const LuxMeter: React.FC<LuxMeterProps> = ({ lang, onClose }) => {
           videoRef.current.srcObject = stream;
         }
       } catch (err) {
-        console.error("Luxmeter camera error:", err);
+        // Camera access denied or not available
       }
     };
 
