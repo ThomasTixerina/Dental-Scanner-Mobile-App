@@ -1,5 +1,6 @@
 
 import React, { useState, useCallback } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import AppHeader from './components/AppHeader';
 import ScannerView from './components/ScannerView';
 import KnowledgeHub from './components/KnowledgeHub';
@@ -423,6 +424,7 @@ const App: React.FC = () => {
       <footer className="p-4 border-t border-slate-800 text-center text-slate-500 text-[10px] md:text-xs">
         <p>&copy; 2024 PocketLab Dental. Democratizing digital dentistry globally.</p>
       </footer>
+      <SpeedInsights />
     </div>
   );
 };
