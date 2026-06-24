@@ -3,5 +3,6 @@
   "description": "A professional-grade mobile extraoral dental scanner app that converts smartphone photos of plaster models into high-precision STL/OBJ files for CAD/CAM dental labs.",
   "requestFramePermissions": [
     "camera"
-  ]
+  ],
+  "majorCapabilities": []
 }

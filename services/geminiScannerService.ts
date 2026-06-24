@@ -5,7 +5,7 @@ import { Language } from "../translations";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function analyzeScanQuality(images: string[], lang: Language = 'es') {
-  const model = 'gemini-3-flash-preview';
+  const model = 'gemini-3.5-flash';
   
   const imageParts = images.slice(0, 3).map(img => ({
     inlineData: {
@@ -19,9 +19,26 @@ export async function analyzeScanQuality(images: string[], lang: Language = 'es'
     contents: {
       parts: [
         ...imageParts,
-        { text: `Analyze these frames from a dental plaster model scan. Check for: 1. Visibility of ArUco markers for scale. 2. Sharpness of the cervical margins. 3. Lighting consistency. 
-        IMPORTANT: Return the "feedback" string in ${lang === 'es' ? 'Spanish' : lang === 'pt' ? 'Portuguese' : 'English'}.
-        Return a JSON with qualityScore (0-100), feedback (string), and missingAngles (array of numbers if any).` }
+        { text: `Strict clinical validation of dental plaster model scan. 
+        You MUST verify that the captured target in the images is genuinely:
+        A) A dental plaster model / cast (upper dental arch or lower dental arch of teeth).
+        OR B) A bite registration (physically assembled upper and lower dental arches with silicone/wax registration).
+        AND C) Centered and aligned inside the anatomical guide silhouette / physical ArUco grid-base sheet.
+
+        If the image contains:
+        - Arbitrary objects (cups, landscape, faces, keyboards, fingers, etc.)
+        - A generic room with no dental models
+        - Handheld items that are NOT dental plaster casts
+        Then you MUST set isDentalSubject to false.
+
+        IMPORTANT: Return the "feedback" string in ${lang === 'es' ? 'Spanish (es)' : lang === 'pt' ? 'Portuguese (pt)' : 'English (en)'}.
+        Provide feedback explaining why the validation failed or succeeded, mentioning anatomical details (e.g., cervical margins, molar alignment, bite silicone, or non-dental object spotted).
+        
+        Return a JSON schema with:
+        - isDentalSubject (boolean): True only if the images contain actual dental casts/models/bite.
+        - meshLocked (boolean): True if the structure aligns with the margins/grid.
+        - qualityScore (number): 0 to 100.
+        - feedback (string): explanation in the target language.` }
       ]
     },
     config: {
@@ -29,6 +46,8 @@ export async function analyzeScanQuality(images: string[], lang: Language = 'es'
       responseSchema: {
         type: Type.OBJECT,
         properties: {
+          isDentalSubject: { type: Type.BOOLEAN },
+          meshLocked: { type: Type.BOOLEAN },
           qualityScore: { type: Type.NUMBER },
           feedback: { type: Type.STRING },
           missingAngles: { 
@@ -36,7 +55,7 @@ export async function analyzeScanQuality(images: string[], lang: Language = 'es'
             items: { type: Type.NUMBER }
           }
         },
-        required: ["qualityScore", "feedback"]
+        required: ["isDentalSubject", "meshLocked", "qualityScore", "feedback"]
       }
     }
   });
@@ -45,7 +64,7 @@ export async function analyzeScanQuality(images: string[], lang: Language = 'es'
 }
 
 export async function generateTechBrief() {
-  const model = 'gemini-3-pro-preview';
+  const model = 'gemini-3.5-flash';
   const response = await ai.models.generateContent({
     model,
     contents: "Explain the photogrammetry pipeline for a dental plaster model using ArUco markers for 1:1 scale calibration. Focus on STL export for Exocad."

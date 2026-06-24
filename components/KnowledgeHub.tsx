@@ -19,9 +19,8 @@ const KnowledgeHub: React.FC<KnowledgeHubProps> = ({ lang }) => {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `You are a dental technical assistant. Answer the following question about dental scanning and 3D formats (STL, PLY, OBJ) for a professional dentist. Answer in ${lang === 'es' ? 'Spanish' : lang === 'pt' ? 'Portuguese' : 'English'}. Question: ${question}`,
-        config: { thinkingConfig: { thinkingBudget: 0 } }
+        model: 'gemini-3.5-flash',
+        contents: `You are a dental technical assistant. Answer the following question about dental scanning and 3D formats (STL, PLY, OBJ) for a professional dentist. Answer in ${lang === 'es' ? 'Spanish' : lang === 'pt' ? 'Portuguese' : 'English'}. Question: ${question}`
       });
       setAnswer(response.text || 'No response');
     } catch (e) {

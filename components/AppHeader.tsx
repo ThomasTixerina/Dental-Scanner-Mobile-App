@@ -5,12 +5,14 @@ import { translations, Language } from '../translations';
 interface AppHeaderProps {
   lang: Language;
   setLang: (lang: Language) => void;
-  currentView: 'scanner' | 'knowledge';
-  setView: (view: 'scanner' | 'knowledge') => void;
+  currentView: 'scanner' | 'knowledge' | 'history' | 'registries';
+  setView: (view: 'scanner' | 'knowledge' | 'history' | 'registries') => void;
 }
 
 const AppHeader: React.FC<AppHeaderProps> = ({ lang, setLang, currentView, setView }) => {
   const t = translations[lang].header;
+  
+  const registriesLabel = lang === 'es' ? 'ERP Clínico' : lang === 'pt' ? 'ERP Clínico' : 'Clinical ERP';
 
   return (
     <header className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl sticky top-0 z-50">
@@ -26,19 +28,31 @@ const AppHeader: React.FC<AppHeaderProps> = ({ lang, setLang, currentView, setVi
         </div>
       </div>
       
-      <nav className="flex items-center gap-4 md:gap-6">
-        <div className="flex items-center gap-2 md:gap-4 mr-2 md:mr-6">
+      <nav className="flex items-center gap-3 md:gap-5">
+        <div className="flex items-center gap-1.5 md:gap-3 mr-1 md:mr-4">
           <button 
             onClick={() => setView('scanner')}
-            className={`text-sm font-bold transition-all px-3 py-1.5 rounded-lg ${currentView === 'scanner' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
+            className={`text-xs md:text-sm font-bold transition-all px-2.5 py-1.5 rounded-lg ${currentView === 'scanner' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
           >
             Scanner
           </button>
           <button 
+            onClick={() => setView('history')}
+            className={`text-xs md:text-sm font-bold transition-all px-2.5 py-1.5 rounded-lg ${currentView === 'history' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
+          >
+            {t.caseHistory}
+          </button>
+          <button 
             onClick={() => setView('knowledge')}
-            className={`text-sm font-bold transition-all px-3 py-1.5 rounded-lg ${currentView === 'knowledge' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
+            className={`text-xs md:text-sm font-bold transition-all px-2.5 py-1.5 rounded-lg ${currentView === 'knowledge' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
           >
             {t.knowledge}
+          </button>
+          <button 
+            onClick={() => setView('registries')}
+            className={`text-xs md:text-sm font-bold transition-all px-2.5 py-1.5 rounded-lg ${currentView === 'registries' ? 'text-blue-400 bg-blue-500/10' : 'text-slate-400 hover:text-white'}`}
+          >
+            📂 {registriesLabel}
           </button>
         </div>
 
@@ -57,7 +71,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({ lang, setLang, currentView, setVi
         </div>
 
         <div className="hidden lg:flex items-center gap-6">
-          <a href="#" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">{t.caseHistory}</a>
+          <button 
+            onClick={() => setView('history')}
+            className={`text-sm font-medium transition-colors ${currentView === 'history' ? 'text-blue-400' : 'text-slate-300 hover:text-white'}`}
+          >
+            {t.caseHistory}
+          </button>
           <button className="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all">
             {t.account}
           </button>
